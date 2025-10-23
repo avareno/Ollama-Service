@@ -28,9 +28,13 @@ public class StockConsumer {
 
     @KafkaListener(topics = "news-summaries",containerFactory = "newsKafkaListenerContainerFactory", groupId = "portfolio-group")
     public void listenResumedNews(BatchOfNews news) {
+        log.info("Received BatchOfNews: {}", news);
         Map<String,Object> options = Map.of("format","json","json_schema","{title:string,summary:string,stockName:string}");
-        String prompt = "Summarize the following news article with he following structure {title:_, summary:_, stockName:_}: ";
+        String prompt = "Summarize the following news article with he following structure: ";
         ResumedNews resumedNews = ollamaService.askWithSchema(prompt + news, ResumedNews.class);
-        log.info("Ollama response: {}", resumedNews.summary());
+        log.info("Ollama response stockName: {}", resumedNews.stockName());
+        log.info("Ollama response title: {}", resumedNews.title());
+        log.info("Ollama response summary: {}", resumedNews.summary());
+        log.info("Ollama response fullArticle: {}", resumedNews.fullArticle());
     }
 }
